@@ -15,10 +15,7 @@
 
 - The biggest advantage of MVT over MVC is the simplicity in its interaction with the user, the database, the framework, and the business logic. It cuts out a lot of added steps in coding that's required of MVC.
 
-3. Now that you've had an introduction to the Django framework, write down three goals you have for yourself and your learning process during this Achievement. You can reflect on the following questions if it helps:
-- What do you want to learn about Django?
-- What do you want to get out of this Achievement?
-- Where or what do you see yourself working on after you complete this Achievement?
+3. Now that you've had an introduction to the Django framework, write down three goals you have for yourself and your learning process during this Achievement.
 
 - Further my experience and expertise of Python
 - Learn a Python-centric framework, Django
