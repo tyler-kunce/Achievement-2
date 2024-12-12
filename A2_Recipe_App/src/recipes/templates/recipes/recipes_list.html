@@ -14,6 +14,23 @@
         <a href="{% url 'custom_auth:logout' %}" >Logout</a>
     </header>
     <main class="recipe-grid">
+        <div>
+            <h1>Search for recipe name:</h1>
+            <hr>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{form}}
+                <button type="submit">Search</button>
+            </form>
+            <br>
+            {% if recipes_df %}
+                {{recipes_df|safe}}
+                <br>
+                <img src="data:image/png;base64, {{chart|safe}}">
+            {% else %}
+                <h3>No Data</h3>
+            {% endif %}
+        </div>
         {% for object in object_list %}
         <div class="recipe-card">
             <a href="{{object.get_absolute_url}}">
