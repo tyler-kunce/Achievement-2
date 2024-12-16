@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from .models import Recipe
 from .forms import RecipesSearchForm
 from .utils import get_chart, get_recipename_from_id
@@ -13,10 +14,9 @@ def home(request):
 
 class RecipeListView(LoginRequiredMixin, ListView):
     model = Recipe
-    template_name = 'recipes/recipes_list.html'
 
-    def get(self, request, template_name):
-        form = RecipesSearchForm(None)
+    def get(self, request):
+        form = RecipesSearchForm()
         recipes = Recipe.objects.all()
 
         context = {
@@ -24,32 +24,32 @@ class RecipeListView(LoginRequiredMixin, ListView):
             'recipes': recipes,
         }
 
-        return render(request, template_name, context)
+        return render(request, 'recipes/recipes_list.html', context)
     
-    def post(self, request, template_name):
+    def post(self, request):
         form = RecipesSearchForm(request.POST)
         recipes = Recipe.objects.all()
-        recipes_df = None
         chart = None
 
-        if request.method == 'POST':
-            recipe_name = request.POST.get('recipe_name')
-            chart_type = request.POST. get('chart_type')
+        if form.is_valid():
+            # import pdb; pdb.set_trace()
+            recipe_name = form.cleaned_data.get('recipe_name')
+            chart_type = form.cleaned_data.get('chart_type')
 
-            qs = Recipe.objects.filter(recipe__name=recipe_name)
-            if qs:
-                recipes_df = pd.DataFrame(qs.values())
-                recipes_df['recipe_id'] = recipes_df['recipe_id'].apply(get_recipename_from_id)
-                chart = get_chart(chart_type, recipes_df, labels = recipes_df['recipe_id'].values)
-                recipes_df = recipes_df.to_html()
+            qs = Recipe.objects.filter(Q(name__icontains=recipe_name) | Q(ingredients__icontains=recipe_name))
+            if qs.exists():
+                recipes = pd.DataFrame(qs.values())
+                recipes['id'] = recipes['id'].apply(get_recipename_from_id)
+                chart = get_chart(chart_type, recipes, labels = recipes['id'].values)
+                recipes = qs
 
         context = {
             'form': form,
-            'recipes_df': recipes_df,
+            'recipes': recipes,
             'chart': chart,
         }
 
-        return render(request, template_name, context)
+        return render(request, 'recipes/recipes_list.html', context)
     
 
 class RecipeDetailView(LoginRequiredMixin, DetailView):

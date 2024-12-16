@@ -30,14 +30,19 @@ def get_chart(chart_type, data, **kwargs):
     fig = plt.figure(figsize=(6,3))
 
     if chart_type == '#1':
-        plt.bar(data['recipe_name'], data['cooking_time'])
+        plt.bar(data['name'], data['cooking_time'])
+        plt.xlabel('Name')
+        plt.ylabel('Cooking Time (mins)')
 
     elif chart_type == '#2':
         labels = kwargs.get('labels')
         plt.pie(data['cooking_time'], labels = labels)
+        plt.title('Recipes by Cooking Time')
 
     elif chart_type == '#3':
-        plt.plot(data['recipe_name'], data['cooking_time'])
+        plt.plot(data['name'], data['cooking_time'])
+        plt.xlabel('Name')
+        plt.ylabel('Cooking Time (mins)')
     
     else:
         print('Unknown chart type')
